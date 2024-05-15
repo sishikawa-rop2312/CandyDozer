@@ -6,9 +6,10 @@ public class Shooter : MonoBehaviour
 {
     public GameObject[] candyPrefabs;
     public Transform candyParentTransform;  // 空Emptyの「Candies」を設定する（Transform型なのに注意）
+    public CandyManager candyManager;
     public float shotForce;
     public float shotTorque;
-    public float baseWidth; // オブジェクトBaseの幅が5なので、
+    public float baseWidth; // オブジェクトBaseの幅が5なので、画面側で5を設定
 
     void Update()
     {
@@ -26,13 +27,16 @@ public class Shooter : MonoBehaviour
     Vector3 GetInstantiatePosition()
     {
         // 画面サイズとInputの割合からキャンディ生成のポジションを計算
-        // Screen幅0から480だとすると、一番左下をクリックするとmousePositon.xは0になり
+        // Screen幅0から480だとすると、一番左下をクリックするとmousePositon.xは0になる
         float x = baseWidth * (Input.mousePosition.x / Screen.width) - (baseWidth / 2);
         return transform.position + new Vector3(x, 0, 0);
     }
 
     public void Shot()
     {
+        // キャンディを生成できる条件外ならShotしない
+        if (candyManager.GetCandyAmount() <= 0) return;
+
         // プレハブからCandyオブジェクトを生成
         // Quaternion.identityとは回転なしの状態（Rotationが0, 0, 0の状態）
         GameObject candy = Instantiate(
@@ -48,5 +52,8 @@ public class Shooter : MonoBehaviour
         Rigidbody candyRigidBody = candy.GetComponent<Rigidbody>();
         candyRigidBody.AddForce(transform.forward * shotForce);
         candyRigidBody.AddTorque(new Vector3(0, shotTorque, 0));
+
+        // キャンディを消費
+        candyManager.ConsumeCandy();
     }
 }
