@@ -36,7 +36,7 @@ public class CandyManager : MonoBehaviour
         string label = "Candy：" + candy;
 
         // 回復カウントしている時だけ秒数を表示
-        if (counter > 0) label = label + "（" + counter + "s）";
+        if (counter > 0) label = label + "(" + counter + "s)";
 
         GUI.Label(new Rect(50, 50, 100, 30), label);
     }
@@ -57,6 +57,7 @@ public class CandyManager : MonoBehaviour
             while (counter > 0)
             {
                 yield return new WaitForSeconds(1.0f);
+                counter--;
             }
 
             candy++;
